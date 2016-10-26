@@ -38,9 +38,13 @@ before :deploy, "deploy:create_archive"
 
 
 namespace :deploy do
-  desc "Bananarama"
-  task :create_archive do
-        system "pwd"
-        system "echo #{release_timestamp}"
-  end
+    desc "Bananarama"
+    task :create_archive do
+        archive_file = "/tmp/#{release_timestamp}.tar.gz"
+        revision_file = "/tmp/#{release_timestamp}_REVISION"
+        # pack code and set revision
+        system "tar -czf  #{archive_file}  `pwd`"
+        system "git log -1 | head -1 | awk '{print $2}' > #{revision_file}"
+        system "echo scp #{archive_file} #{revision_file} #{fetch(:ssh_user)}@#{fetch(:ssh_host)}:#{repo_path}"
+    end
 end
