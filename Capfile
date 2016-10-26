@@ -1,26 +1,38 @@
-require 'capistrano/git'
-require './lib/capistrano/scp-strategy'
-
-
 require 'capistrano/setup'
 require 'capistrano/deploy'
-set :copy_strategy, :scp
-set :stage, :production
-set :stages, ["testing","staging", "production"]
+require 'capistrano/git'
 
-set :application, "php_app"
+module ScpStrategy
+    include Capistrano::Git::DefaultStrategy
 
+    # clear method
+    def test
+    end
+
+    # clear method
+    def check
+    end
+
+    # clear method
+    def clone
+    end
+
+    # clear method
+    def update
+    end
+
+    # TODO really extract Data
+    def release
+        context.execute "echo tar -xzf #{repo_path}/#{release_timestamp}.tar.gz #{release_path}/"
+    end
+
+    def fetch_revision
+        context.execute "echo `cat #{repo_path}/#{release_timestamp}_REVISION`"
+    end
+end
+
+set :git_strategy, ScpStrategy
 set :scm, :git
-set :repo_url, 'git@github.com:itsmethemojo/utils.git'
-set :deploy_to, "/tmp/www/php_app"
-
-
-
-server '54.93.75.41', user: 'ubuntu', roles: %w{web app db}, primary: true
-set :git_strategy, SubmoduleStrategy
-
-
-
 
 before :deploy, "deploy:create_archive"
 
