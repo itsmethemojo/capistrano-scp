@@ -21,11 +21,12 @@ module ScpStrategy
     def update
     end
 
-    # TODO really extract Data
+    # TODO for some reason this is called twice, so make sure we don't extract twice
     def release
-        context.execute "[ $(ls -A #{release_path} | wc -l) -gt 0 ] || ( cd #{release_path} && tar -v -xzf #{repo_path}/#{release_timestamp}.tar.gz )"
+        context.execute "[ $(ls -A #{release_path} | wc -l) -gt 0 ] || ( cd #{release_path} && tar -xzf #{repo_path}/#{release_timestamp}.tar.gz )"
     end
 
+    # expect Revision in uploaded [TIMESTAMP]_REVISION file
     def fetch_revision
         context.capture "cat #{repo_path}/#{release_timestamp}_REVISION"
     end
@@ -36,15 +37,22 @@ set :scm, :git
 
 before :deploy, "deploy:create_archive"
 
-
 namespace :deploy do
-    desc "Bananarama"
+    desc "creates and uploads file archive and revision file"
     task :create_archive do
         archive_file = "/tmp/#{release_timestamp}.tar.gz"
         revision_file = "/tmp/#{release_timestamp}_REVISION"
         # pack code and set revision
+        # TODO add exlude File Pattern
         system "tar -czf  #{archive_file} ."
         system "git log -1 | head -1 | awk '{print $2}' > #{revision_file}"
         system "scp #{archive_file} #{revision_file} #{fetch(:ssh_user)}@#{fetch(:ssh_host)}:#{repo_path}"
     end
 end
+
+# use "ssh_user" and "ssh_host" to specify target
+# TODO this currently just works for one target server
+server "#{fetch(:ssh_host)}", user: "#{fetch(:ssh_user)}", roles: %w{web app db}, primary: true
+
+# set default stages
+set :stages, ["testing", "staging", "production"]
