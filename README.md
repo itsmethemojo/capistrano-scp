@@ -45,7 +45,8 @@ touch config/deploy/testing.rb
 ### configure a stage
 ```ruby
 set :deploy_to, "/path/on/remote/server"
+set :exclude, Array["**/.git","**/node_modules"]
 set :ssh_user, "userForSsh"
 set :ssh_host, "hostForSsh"
-server "#{fetch(:ssh_host)}", user: "#{fetch(:ssh_user)}", roles: %w{web app}, primary: true
+server "#{fetch(:ssh_host)}", user: "#{fetch(:ssh_user)}", roles: %w{web}, primary: true
 ```
