@@ -23,7 +23,7 @@ module ScpStrategy
 
     # TODO really extract Data
     def release
-        context.execute "echo tar -xzf #{repo_path}/#{release_timestamp}.tar.gz #{release_path}/"
+        context.execute "[ $(ls -A #{release_path} | wc -l) -gt 0 ] || ( cd #{release_path} && tar -v -xzf #{repo_path}/#{release_timestamp}.tar.gz )"
     end
 
     def fetch_revision
