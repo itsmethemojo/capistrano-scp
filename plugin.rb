@@ -50,9 +50,5 @@ namespace :deploy do
     end
 end
 
-# use "ssh_user" and "ssh_host" to specify target
-# TODO this currently just works for one target server
-server "#{fetch(:ssh_host)}", user: "#{fetch(:ssh_user)}", roles: %w{web app db}, primary: true
-
 # set default stages
 set :stages, ["testing", "staging", "production"]
