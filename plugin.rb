@@ -1,5 +1,10 @@
+# set default stages
+set :stages, ["testing", "staging", "production"]
+
 # set default exclude list
 set :excludes, %w{"**/.git"}
+
+set :application, %x( echo "${PWD##*/}")
 
 require 'capistrano/setup'
 require 'capistrano/deploy'
@@ -71,7 +76,3 @@ namespace :deploy do
         system "ssh #{fetch(:ssh_user)}@#{fetch(:ssh_host)} 'rm #{repo_path}/#{release_timestamp}.tar.gz #{repo_path}/#{release_timestamp}_REVISION'"
     end
 end
-
-
-# set default stages
-set :stages, ["testing", "staging", "production"]
