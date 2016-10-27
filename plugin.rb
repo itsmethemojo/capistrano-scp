@@ -38,11 +38,11 @@ end
 set :git_strategy, ScpStrategy
 set :scm, :git
 
-before :deploy, "deploy:create_archive"
+before :deploy, "deploy:create_artefact"
 
 namespace :deploy do
-    desc "creates and uploads file archive and revision file"
-    task :create_archive do
+    desc "creates and uploads deploy artefacts"
+    task :create_artefact do
 
         excludeOptions = ""
         fetch(:excludes).each { |exclude| excludeOptions.concat("--exclude '#{exclude}' ") }
@@ -62,12 +62,12 @@ namespace :deploy do
     end
 end
 
-after "deploy:log_revision", "deploy:removeTempFiles"
+after "deploy:log_revision", "deploy:remove_artefact"
 
 # this should be done on the server itself, but hey, this works too
 namespace :deploy do
     desc "removes deploy artefacts"
-    task :removeTempFiles do
+    task :remove_artefact do
         system "ssh #{fetch(:ssh_user)}@#{fetch(:ssh_host)} 'rm #{repo_path}/#{release_timestamp}.tar.gz #{repo_path}/#{release_timestamp}_REVISION'"
     end
 end
