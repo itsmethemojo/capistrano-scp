@@ -27,7 +27,6 @@ module ScpStrategy
     # TODO for some reason this is called twice, so make sure we don't extract twice
     def release
         context.execute "[ $(ls -A #{release_path} | wc -l) -gt 0 ] || ( cd #{release_path} && tar -xzf #{repo_path}/#{release_timestamp}.tar.gz )"
-        #TODO remove files again
     end
 
     # expect Revision in uploaded [TIMESTAMP]_REVISION file
