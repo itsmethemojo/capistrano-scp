@@ -42,6 +42,8 @@ namespace :deploy do
     task :create_archive do
         archive_file = "/tmp/#{release_timestamp}.tar.gz"
         revision_file = "/tmp/#{release_timestamp}_REVISION"
+        # stop if dir is no git repo
+        system("git log -1") or exit
         # pack code and set revision
         # TODO add exlude File Pattern
         system "tar -czf  #{archive_file} ."
