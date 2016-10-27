@@ -27,7 +27,7 @@ module ScpStrategy
     end
 
     def fetch_revision
-        context.execute "echo `cat #{repo_path}/#{release_timestamp}_REVISION`"
+        context.capture "cat #{repo_path}/#{release_timestamp}_REVISION"
     end
 end
 
@@ -43,8 +43,8 @@ namespace :deploy do
         archive_file = "/tmp/#{release_timestamp}.tar.gz"
         revision_file = "/tmp/#{release_timestamp}_REVISION"
         # pack code and set revision
-        system "tar -czf  #{archive_file}  `pwd`"
+        system "tar -czf  #{archive_file} ."
         system "git log -1 | head -1 | awk '{print $2}' > #{revision_file}"
-        system "echo scp #{archive_file} #{revision_file} #{fetch(:ssh_user)}@#{fetch(:ssh_host)}:#{repo_path}"
+        system "scp #{archive_file} #{revision_file} #{fetch(:ssh_user)}@#{fetch(:ssh_host)}:#{repo_path}"
     end
 end
