@@ -50,7 +50,7 @@ namespace :deploy do
     task :create_artefact do
 
         excludeOptions = ""
-        fetch(:excludes).each { |exclude| excludeOptions.concat("--exclude '#{exclude}' ") }
+        fetch(:excludes).each { |exclude| excludeOptions.concat("--exclude #{exclude} ") }
 
         archive_file = "/tmp/#{release_timestamp}.tar.gz"
         revision_file = "/tmp/#{release_timestamp}_REVISION"
