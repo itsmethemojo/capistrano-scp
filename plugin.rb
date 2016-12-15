@@ -59,8 +59,8 @@ namespace :deploy do
         system("git log -1  > /dev/null") or exit
 
         # pack code and set revision
-        system "echo tar -czf #{excludeOptions} #{archive_file} ."
-        system "tar -czf #{excludeOptions} #{archive_file} ."
+        system "echo tar #{excludeOptions} -czf #{archive_file} ."
+        system "tar #{excludeOptions} -czf #{archive_file} ."
         system "git log -1 | head -1 | awk '{print $2}' > #{revision_file}"
         system "ssh #{fetch(:ssh_user)}@#{fetch(:ssh_host)} 'mkdir -p #{repo_path}'"
         system "scp #{archive_file} #{revision_file} #{fetch(:ssh_user)}@#{fetch(:ssh_host)}:#{repo_path}"
