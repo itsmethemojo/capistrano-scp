@@ -56,8 +56,8 @@ namespace :deploy do
         revision_file = "/tmp/#{release_timestamp}_REVISION"
 
         # retrieve revision from local repository
-        system "[ ! -d .git] || (git log -1 | head -1 | awk '{print $2}' > #{revision_file})"
-        system "[ ! -d .svn] || (svnversion > #{revision_file})"
+        system "[ ! -d .git ] || (git log -1 | head -1 | awk '{print $2}' > #{revision_file})"
+        system "[ ! -d .svn ] || (svnversion > #{revision_file})"
 
         # stop if dir is no git or svn repo
         system("cat #{revision_file} > /dev/null") or exit
